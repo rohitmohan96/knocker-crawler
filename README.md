@@ -8,3 +8,9 @@
 The project envisages to crawl globally all websites and filter and extract jobs advertised by every company on their website. These extracted jobs will be grouped and based on individual preferences appropriate recommendations will be made. An extension of this project can be taken up by incorporating machine learning to give accurate recommendations. The project will take from individuals their strengths and preferences of jobs as input and iteratively recommend suggestions. 
 
 Installation: [Setup](https://github.com/rohitmohan96/knocker-crawler/wiki/Setup)
+
+Run the spider using:
+
+```bash
+scrapy crawl knocker
+```
