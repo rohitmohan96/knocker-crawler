@@ -2,7 +2,7 @@ import re
 import scrapy
 from scrapy.spiders import CrawlSpider, Rule
 from scrapy.linkextractors import LinkExtractor
-from knocker.items import CategoryItem, JobItem
+from knocker.items import JobItem
 
 
 class KnockerSpider(CrawlSpider):
@@ -17,7 +17,7 @@ class KnockerSpider(CrawlSpider):
     def parse_categories(self, response):
         regex = re.compile(r'consultant|manager|executive|developer|engineer', re.I)
         links = response.css('a')
-        for index, link in enumerate(links):
+        for link in links:
             if link.css('::text').re_first(regex):
                 yield scrapy.Request(response.urljoin(link.css('::attr(href)').extract_first()),
                                      callback=self.parse_job)
