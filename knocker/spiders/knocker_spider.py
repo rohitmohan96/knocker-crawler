@@ -7,11 +7,15 @@ from knocker.items import JobItem
 
 class KnockerSpider(CrawlSpider):
     name = "knocker"
-    allowed_domains = ['jobopenings.infosys.com', 'jobs.cisco.com']
-    start_urls = ['https://jobopenings.infosys.com/viewalljobs/', 'https://jobs.cisco.com/']
+    allowed_domains = ['jobopenings.infosys.com', 'jobs.cisco.com', 'jobs.sap.com']
+    start_urls = [
+        'https://jobopenings.infosys.com/viewalljobs/',
+        'https://jobs.cisco.com/',
+        'https://jobs.sap.com/asia-pacific/english/?locale=en_US'
+    ]
 
     rules = (
-        Rule(LinkExtractor(deny=('\.pdf',)), callback='parse_categories'),
+        Rule(LinkExtractor(deny=('\.pdf',)), callback='parse_categories', follow=False),
     )
 
     def parse_categories(self, response):

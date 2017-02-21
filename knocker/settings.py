@@ -14,6 +14,7 @@ BOT_NAME = 'knocker'
 SPIDER_MODULES = ['knocker.spiders']
 NEWSPIDER_MODULE = 'knocker.spiders'
 
+DEPTH_LIMIT = 3
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = 'knocker (+http://www.yourdomain.com)'
