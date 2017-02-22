@@ -5,7 +5,6 @@
 # See documentation in:
 # http://doc.scrapy.org/en/latest/topics/items.html
 
-import scrapy
 from scrapy import Item, Field
 
 
@@ -16,7 +15,6 @@ class CategoryItem(Item):
 
 class JobItem(Item):
     title = Field()
-    id = Field()
     skills = Field()
     experience = Field()
     location = Field()
