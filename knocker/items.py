@@ -8,11 +8,6 @@
 from scrapy import Item, Field
 
 
-class CategoryItem(Item):
-    title = Field()
-    url = Field()
-
-
 class JobItem(Item):
     title = Field()
     skills = Field()
