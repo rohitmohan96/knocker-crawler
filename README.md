@@ -13,4 +13,7 @@ Run the spider using:
 
 ```bash
 scrapy crawl knocker
+
+# To export to a JSON lines file
+scrapy crawl knocker -o knocker.jl
 ```
