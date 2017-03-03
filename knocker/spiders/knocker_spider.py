@@ -61,12 +61,12 @@ class KnockerSpider(CrawlSpider):
         match_location = self.location_pattern.search(text)
 
         if match_location is not None:
-            item['location'] = match_location[1].strip()
+            item['location'] = match_location.group(1).strip()
         else:
             t = response.css('[class*="location"] a::text').extract()
             item['location'] = ''.join(t).strip()
 
         match_experience = self.experience_pattern.search(text)
-        item['experience'] = match_experience[1].strip()
+        item['experience'] = match_experience.group(1).strip()
 
         yield item
