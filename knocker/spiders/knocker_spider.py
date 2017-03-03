@@ -11,12 +11,16 @@ class KnockerSpider(CrawlSpider):
 
     allowed_domains = [
         'jobopenings.infosys.com',
-        'jobs.sap.com'
+        'jobs.sap.com',
+        'akamaijobs.referrals.selectminds.com',
+        'jobs.capgemini.com'
     ]
 
     start_urls = [
         'https://jobopenings.infosys.com/viewalljobs/',
-        'https://jobs.sap.com/asia-pacific/english/?locale=en_US'
+        'https://jobs.sap.com/asia-pacific/english/?locale=en_US',
+        'https://akamaijobs.referrals.selectminds.com/',
+        'https://jobs.capgemini.com/india/'
     ]
 
     rules = (
@@ -27,9 +31,9 @@ class KnockerSpider(CrawlSpider):
     )
 
     job_title_pattern = re.compile(r'(consultant|manager|executive|developer|engineer)(?!.*jobs)', re.I)
-    page_no_pattern = re.compile(r'\s*\d+\s*')
+    page_no_pattern = re.compile(r'\s*(\d+|next)\s*', re.I)
     location_pattern = re.compile(r'location:\s*([\w, ]*)', re.I)
-    experience_pattern = re.compile(r'(\d+\s*(?:-|to)?\s*\d*\+?)\s*(?:years|yrs)', re.I)
+    experience_pattern = re.compile(r'(\d+\s*(?:-|to)?\s*\d*\+?)\s*(?:year|yr)', re.I)
 
     h = html2text.HTML2Text()
     h.ignore_emphasis = True
@@ -55,9 +59,14 @@ class KnockerSpider(CrawlSpider):
         text = self.h.handle(response.css('body').extract_first())
 
         match_location = self.location_pattern.search(text)
-        item['location'] = match_location[1].strip()
+
+        if match_location is not None:
+            item['location'] = match_location[1].strip()
+        else:
+            t = response.css('[class*="location"] a::text').extract()
+            item['location'] = ''.join(t).strip()
 
         match_experience = self.experience_pattern.search(text)
-        item['experience'] = match_experience[1]
+        item['experience'] = match_experience[1].strip()
 
         yield item
