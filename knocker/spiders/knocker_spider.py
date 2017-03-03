@@ -1,34 +1,36 @@
 import re
 import scrapy
 import html2text
-from scrapy.spiders import CrawlSpider, Rule
 from scrapy.linkextractors import LinkExtractor
+from scrapy_splash import SplashRequest
 from knocker.items import JobItem
 
 
-class KnockerSpider(CrawlSpider):
+class KnockerSpider(scrapy.Spider):
     name = "knocker"
 
     allowed_domains = [
         'jobopenings.infosys.com',
         'jobs.sap.com',
         'akamaijobs.referrals.selectminds.com',
-        'jobs.capgemini.com'
+        'jobs.capgemini.com',
+        'amazon.jobs'
     ]
 
     start_urls = [
         'https://jobopenings.infosys.com/viewalljobs/',
         'https://jobs.sap.com/asia-pacific/english/?locale=en_US',
         'https://akamaijobs.referrals.selectminds.com/',
-        'https://jobs.capgemini.com/india/'
+        'https://jobs.capgemini.com/india/',
+        'https://www.amazon.jobs/en/job_categories'
     ]
 
-    rules = (
-        Rule(LinkExtractor(deny=('\.pdf',
-                                 'key/.*',
-                                 'topjobs',)),
-             callback='parse_categories'),
-    )
+    splash_args = {
+        'html': 1,
+        'wait': 0.5,
+        'width': 600,
+        'render_all': 1,
+    }
 
     job_title_pattern = re.compile(r'(consultant|manager|executive|developer|engineer)(?!.*jobs)', re.I)
     page_no_pattern = re.compile(r'\s*(\d+|next)\s*', re.I)
@@ -41,15 +43,24 @@ class KnockerSpider(CrawlSpider):
     h.ignore_tables = True
     h.ignore_images = True
 
+    def start_requests(self):
+        for url in self.start_urls:
+            yield SplashRequest(url, self.parse, args={'wait': 0.5})
+
+    def parse(self, response):
+        le = LinkExtractor()
+        for link in le.extract_links(response):
+            yield SplashRequest(link.url, self.parse_categories, args=self.splash_args)
+
     def parse_categories(self, response):
         links = response.css('a')
         for link in links:
             if link.css('::text').re_first(self.job_title_pattern):
-                yield scrapy.Request(response.urljoin(link.css('::attr(href)').extract_first()),
-                                     callback=self.parse_job)
+                yield SplashRequest(response.urljoin(link.css('::attr(href)').extract_first()),
+                                    self.parse_job, args=self.splash_args)
             elif link.css('::text').re_first(self.page_no_pattern):
-                yield scrapy.Request(response.urljoin(link.css('::attr(href)').extract_first()),
-                                     callback=self.parse_categories)
+                yield SplashRequest(response.urljoin(link.css('::attr(href)').extract_first()),
+                                    self.parse_categories, args=self.splash_args)
 
     def parse_job(self, response):
         item = JobItem()
