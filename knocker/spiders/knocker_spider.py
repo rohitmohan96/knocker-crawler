@@ -28,7 +28,6 @@ class KnockerSpider(scrapy.Spider):
     splash_args = {
         'html': 1,
         'wait': 0.5,
-        'width': 600,
         'render_all': 1,
     }
 
@@ -48,7 +47,9 @@ class KnockerSpider(scrapy.Spider):
             yield SplashRequest(url, self.parse, args={'wait': 0.5})
 
     def parse(self, response):
-        le = LinkExtractor()
+        le = LinkExtractor(deny=('\.pdf',
+                                 'key/.*',
+                                 'topjobs',))
         for link in le.extract_links(response):
             yield SplashRequest(link.url, self.parse_categories, args=self.splash_args)
 
