@@ -33,7 +33,7 @@ class KnockerSpider(CrawlSpider):
     job_title_pattern = re.compile(r'(consultant|manager|executive|developer|engineer)(?!.*jobs)', re.I)
     page_no_pattern = re.compile(r'\s*(\d+|next)\s*', re.I)
     location_pattern = re.compile(r'location:\s*([\w, ]*)', re.I)
-    experience_pattern = re.compile(r'(\d+\s*(?:-|to)?\s*\d*\+?)\s*(?:year|yr)', re.I)
+    experience_pattern = re.compile(r'(\d+)\s*(?:-|to)?\s*\d*\+?\s*(?:year|yr)', re.I)
 
     h = html2text.HTML2Text()
     h.ignore_emphasis = True
