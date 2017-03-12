@@ -18,8 +18,6 @@ DEPTH_LIMIT = 3
 
 SPLASH_URL = 'http://localhost:8050'
 
-SPLASH_SLOT_POLICY = 'scrapy_splash.SlotPolicy.PER_DOMAIN'
-
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = 'knocker (+http://www.yourdomain.com)'
 
