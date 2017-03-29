@@ -12,9 +12,6 @@ from scrapy.conf import settings
 from scrapy.exceptions import DropItem
 from scrapy import log
 
-class KnockerPipeline(object):
-    def process_item(self, item, spider):
-        return item
 
 class MongoPipeline(object):
 
