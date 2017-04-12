@@ -15,3 +15,4 @@ class JobItem(Item):
     location = Field()
     education = Field()
     url = Field()
+    crawl_id = Field()
