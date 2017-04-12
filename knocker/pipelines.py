@@ -9,26 +9,29 @@
 
 import pymongo
 from scrapy.conf import settings
-from scrapy.exceptions import DropItem
 from scrapy import log
 
 
 class MongoPipeline(object):
-
     def __init__(self):
-        connection = pymongo.MongoClient(
+        self.connection = pymongo.MongoClient(
             settings['MONGODB_SERVER'],
             settings['MONGODB_PORT']
         )
-        db = connection[settings['MONGODB_DB']]
-        self.collection = db[settings['MONGODB_COLLECTION']]
+        self.db = self.connection[settings['MONGODB_DB']]
+        self.collection = self.db[settings['MONGODB_COLLECTION']]
+
+    def open_spider(self, spider):
+        self.crawl = self.db[settings['CRAWL_COLLECTION']]
+        self.crawl_id_one = self.crawl.find_one()['crawl_id']
+        self.crawl_id = self.crawl_id_one + 1
 
     def process_item(self, item, spider):
-        for data in item:
-            if not data:
-                raise DropItem("Missing data!")
-            else:
-                self.collection.update({'url': item['url']}, dict(item), upsert=True)
-                log.msg("items added",
+        item['crawl_id'] = self.crawl_id
+        self.collection.replace_one({'url': item['url']}, dict(item), upsert=True)
+        log.msg("items added",
                 level=log.DEBUG, spider=spider)
-        return item
+
+    def close_spider(self, spider):
+        self.crawl.replace_one({'crawl_id': self.crawl_id_one}, {'crawl_id': self.crawl_id})
+        self.connection.close()
