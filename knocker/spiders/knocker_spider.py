@@ -13,14 +13,16 @@ class KnockerSpider(CrawlSpider):
         'jobopenings.infosys.com',
         'jobs.sap.com',
         'akamaijobs.referrals.selectminds.com',
-        'jobs.capgemini.com'
+        'jobs.capgemini.com',
+        'jobs.cisco.com'
     ]
 
     start_urls = [
         'https://jobopenings.infosys.com/viewalljobs/',
         'https://jobs.sap.com/asia-pacific/english/?locale=en_US',
         'https://akamaijobs.referrals.selectminds.com/',
-        'https://jobs.capgemini.com/india/'
+        'https://jobs.capgemini.com/india/',
+        'https://jobs.cisco.com'
     ]
 
     rules = (
@@ -67,6 +69,6 @@ class KnockerSpider(CrawlSpider):
             item['location'] = ''.join(t).strip()
 
         match_experience = self.experience_pattern.search(text)
-        item['experience'] = match_experience.group(1).strip()
+        item['experience'] = int(match_experience.group(1).strip())
 
         yield item
