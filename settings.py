@@ -3,6 +3,8 @@ MONGO_PORT = 27017
 
 MONGO_DBNAME = 'KnockerDB'
 
+X_DOMAINS = '*'
+
 DOMAIN = {
     'Jobs': {
         'allow_unknown': True,
