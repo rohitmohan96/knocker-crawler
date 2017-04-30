@@ -8,6 +8,7 @@
 import pymongo
 from scrapy import log
 from scrapy.conf import settings
+from scrapy.exceptions import DropItem
 
 
 class MongoPipeline(object):
@@ -26,9 +27,14 @@ class MongoPipeline(object):
 
     def process_item(self, item, spider):
         item['crawl_id'] = self.crawl_id
-        self.collection.replace_one({'url': item['url']}, dict(item), upsert=True)
-        log.msg("items added",
-                level=log.DEBUG, spider=spider)
+
+        if 'experience' not in item:
+            raise DropItem("Cannot parse experience in job: %s" % item['url'])
+        else:
+            self.collection.replace_one({'url': item['url']}, dict(item), upsert=True)
+            log.msg("items added",
+                    level=log.DEBUG, spider=spider)
+            return item
 
     def close_spider(self, spider):
         self.crawl.replace_one({'crawl_id': self.crawl_id_one}, {'crawl_id': self.crawl_id})

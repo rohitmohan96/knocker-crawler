@@ -1,6 +1,7 @@
 import re
 import scrapy
 import html2text
+from scrapy.shell import inspect_response
 from scrapy.spiders import CrawlSpider, Rule
 from scrapy.linkextractors import LinkExtractor
 from knocker.items import JobItem
@@ -36,6 +37,8 @@ class KnockerSpider(CrawlSpider):
     page_no_pattern = re.compile(r'\s*(\d+|next)\s*', re.I)
     location_pattern = re.compile(r'location:\s*([\w, ]*)', re.I)
     experience_pattern = re.compile(r'(\d+)\s*(?:-|to)?\s*\d*\+?\s*(?:year|yr)', re.I)
+    keywords_pattern = re.compile(r'(?<=\W)(javascript|java|c\+\+|c#|c|html|css|python|linux|sql)(?=\W)', re.I)
+    qualifications_pattern = re.compile(r'(?<=\W)(b\.?tech|m\.?tech|ms|bs|ba)(?=\W)', re.I)
 
     h = html2text.HTML2Text()
     h.ignore_emphasis = True
@@ -69,6 +72,18 @@ class KnockerSpider(CrawlSpider):
             item['location'] = ''.join(t).strip()
 
         match_experience = self.experience_pattern.search(text)
-        item['experience'] = int(match_experience.group(1).strip())
+
+        if match_experience is not None:
+            item['experience'] = int(match_experience.group(1).strip())
+
+        matches_keywords = self.keywords_pattern.findall(text)
+
+        if matches_keywords is not None:
+            item['keywords'] = list(set(m.upper() for m in matches_keywords))
+
+        matches_categories = self.job_title_pattern.findall(item['title'])
+
+        if matches_categories is not None:
+            item['categories'] = [m.upper() for m in matches_categories]
 
         yield item

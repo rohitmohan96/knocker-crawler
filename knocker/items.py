@@ -10,9 +10,10 @@ from scrapy import Item, Field
 
 class JobItem(Item):
     title = Field()
-    skills = Field()
     experience = Field()
     location = Field()
-    education = Field()
     url = Field()
     crawl_id = Field()
+    keywords = Field()
+    categories = Field()
+
