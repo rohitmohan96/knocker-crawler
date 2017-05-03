@@ -5,6 +5,8 @@ MONGO_DBNAME = 'KnockerDB'
 
 X_DOMAINS = '*'
 
+RESOURCE_METHODS = ['GET', 'POST', 'DELETE']
+
 DOMAIN = {
     'Jobs': {
         'allow_unknown': True,
@@ -24,6 +26,21 @@ DOMAIN = {
     'crawl': {
         'schema': {
             'crawl_id': {'type': 'integer'}
+        }
+    },
+    'pinnedJobs': {
+        'allow_unknown': True,
+        'schema': {
+            'uid': {'type': 'string'},
+            'jobId': {'type': 'objectid'}
+        },
+        'datasource': {
+            'aggregation': {
+                'pipeline': [
+                    {'$lookup': {'from': 'Jobs', 'localField': 'jobId', 'foreignField': '_id', 'as': 'job'}},
+                    {'$unwind': '$job'}
+                ]
+            }
         }
     }
 }
