@@ -16,4 +16,5 @@ class JobItem(Item):
     crawl_id = Field()
     keywords = Field()
     categories = Field()
+    company = Field()
 
