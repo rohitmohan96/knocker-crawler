@@ -8,6 +8,7 @@ XML = False
 IF_MATCH = False
 
 X_DOMAINS = '*'
+X_HEADERS = ['Content-Type']
 
 DOMAIN = {
     'Jobs': {
