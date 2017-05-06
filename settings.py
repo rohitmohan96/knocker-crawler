@@ -3,9 +3,11 @@ MONGO_PORT = 27017
 
 MONGO_DBNAME = 'KnockerDB'
 
-X_DOMAINS = '*'
+XML = False
 
-RESOURCE_METHODS = ['GET', 'POST', 'DELETE']
+IF_MATCH = False
+
+X_DOMAINS = '*'
 
 DOMAIN = {
     'Jobs': {
@@ -31,17 +33,17 @@ DOMAIN = {
         }
     },
     'pinnedJobs': {
-        'allow_unknown': True,
+        'resource_methods': ['GET', 'POST', 'DELETE'],
+        'item_methods': ['GET', 'PATCH', 'PUT', 'DELETE'],
         'schema': {
             'uid': {'type': 'string'},
-            'jobId': {'type': 'objectid'}
-        },
-        'datasource': {
-            'aggregation': {
-                'pipeline': [
-                    {'$lookup': {'from': 'Jobs', 'localField': 'jobId', 'foreignField': '_id', 'as': 'job'}},
-                    {'$unwind': '$job'}
-                ]
+            'job': {
+                'type': 'objectid',
+                'data_relation': {
+                    'resource': 'Jobs',
+                    'field': '_id',
+                    'embeddable': True
+                }
             }
         }
     }
