@@ -18,6 +18,14 @@ class KnockerSpider(CrawlSpider):
         'jobs.cisco.com'
     ]
 
+    companies = {
+        'https://jobopenings.infosys.com': 'Infosys Ltd.',
+        'https://jobs.sap.com': 'SAP Software Solutions',
+        'https://akamaijobs.referrals.selectminds.com/': 'Akamai Technologies',
+        'https://jobs.capgemini.com': 'Capgemini',
+        'https://jobs.cisco.com': 'Cisco Systems, Inc.'
+    }
+
     start_urls = [
         'https://jobopenings.infosys.com/viewalljobs/',
         'https://jobs.sap.com/asia-pacific/english/?locale=en_US',
@@ -60,6 +68,11 @@ class KnockerSpider(CrawlSpider):
         item = JobItem()
         item['title'] = response.css('title::text').extract_first()
         item['url'] = response.url
+
+        for key in self.companies:
+            if item['url'].startswith(key):
+                item['company'] = self.companies[key]
+                break
 
         text = self.h.handle(response.css('body').extract_first())
 

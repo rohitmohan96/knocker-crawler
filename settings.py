@@ -18,7 +18,9 @@ DOMAIN = {
             'experience': {'type': 'integer'},
             'location': {'type': 'string'},
             'keywords': {'type': 'list'},
-            'crawl_id': {'type': 'integer'}
+            'crawl_id': {'type': 'integer'},
+            'categories': {'type': 'integer'},
+            'company': {'type': 'string'}
         },
         'mongo_indexes': {
             'text':
