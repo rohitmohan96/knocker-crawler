@@ -3,6 +3,8 @@ MONGO_PORT = 27017
 
 MONGO_DBNAME = 'KnockerDB'
 
+XML = False
+
 X_DOMAINS = '*'
 
 RESOURCE_METHODS = ['GET', 'POST', 'DELETE']
