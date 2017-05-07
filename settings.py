@@ -4,9 +4,8 @@ MONGO_PORT = 27017
 MONGO_DBNAME = 'KnockerDB'
 
 XML = False
-
+CACHE_CONTROL='no-cache'
 IF_MATCH = False
-
 X_DOMAINS = '*'
 X_HEADERS = ['Content-Type']
 
